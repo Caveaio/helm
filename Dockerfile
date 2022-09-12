@@ -7,8 +7,8 @@ ENV HELM_3_FILE="helm-v3.9.4-linux-amd64.tar.gz"
 
 RUN apk add --no-cache ca-certificates \
     --repository http://dl-3.alpinelinux.org/alpine/edge/community/ \
-    jq curl bash nodejs gcloud && \
-    apk add --no-cache gcloud && \
+    jq curl bash nodejs  && \
+    apk add --no-cache && \
     apk add --no-cache \
         python3 \
         py3-pip \
@@ -16,6 +16,7 @@ RUN apk add --no-cache ca-certificates \
     && pip3 install --no-cache-dir \
         gcloud \
     && rm -rf /var/cache/apk/* && \
+    curl -sSL https://sdk.cloud.google.com | bash && \
     # Install helm version 2:
     curl -L ${BASE_URL}/${HELM_2_FILE} |tar xvz && \
     mv linux-amd64/helm /usr/bin/helm && \
@@ -29,6 +30,7 @@ RUN apk add --no-cache ca-certificates \
     # Init version 2 helm:
     helm init --client-only
 
+ENV PATH $PATH:/root/google-cloud-sdk/bin
 ENV PYTHONPATH "/usr/lib/python3.8/site-packages/"
 
 COPY . /usr/src/
